@@ -17,6 +17,7 @@ precision highp float;
 uniform vec2 u_res;
 uniform float u_time;
 uniform float u_yaw;
+uniform float u_day; // 0 = night nebula, 1 = day glass
 
 float hash(vec3 p) {
   p = fract(p * 0.3183099 + 0.1);
@@ -55,21 +56,26 @@ void main() {
   float nb = fbm(p * 1.8 + vec3(0.0, 0.0, u_time * 0.03));
   float nb2 = fbm(p * 3.6 + 7.3);
   float dens = smoothstep(0.3, 0.9, nb);
-  vec3 col = mix(vec3(0.5, 0.22, 0.4), vec3(1.0, 0.55, 0.75), dens);
-  col = mix(col, vec3(1.0, 0.8, 0.9), smoothstep(0.6, 0.95, nb));
-  col = mix(col, vec3(0.62, 0.45, 0.85), smoothstep(0.55, 0.9, nb2) * 0.25);
+  vec3 base  = mix(vec3(0.5, 0.22, 0.4),  vec3(0.99, 0.7, 0.36),  u_day);
+  vec3 cloud = mix(vec3(1.0, 0.55, 0.75), vec3(1.0, 0.58, 0.24),  u_day);
+  vec3 core  = mix(vec3(1.0, 0.8, 0.9),   vec3(1.0, 0.84, 0.55),  u_day);
+  vec3 wisp  = mix(vec3(0.62, 0.45, 0.85), vec3(0.92, 0.42, 0.16), u_day);
+  vec3 col = mix(base, cloud, dens);
+  col = mix(col, core, smoothstep(0.6, 0.95, nb));
+  col = mix(col, wisp, smoothstep(0.55, 0.9, nb2) * 0.25);
 
-  // star specks rotating with the surface
+  // star specks rotating with the surface (fade to golden dust by day)
   vec3 sp3 = p * 22.0;
   float star = step(0.992, hash(floor(sp3)));
   float glow = star * smoothstep(0.42, 0.0, length(fract(sp3) - 0.5));
-  col += vec3(1.0, 0.96, 0.9) * glow * 0.9;
+  col += mix(vec3(1.0, 0.96, 0.9), vec3(1.0, 0.8, 0.5), u_day) * glow * mix(0.9, 0.35, u_day);
 
-  // prismatic fresnel rim (chromatic dispersion)
+  // fresnel rim: prismatic by night, golden by day
   float fres = pow(1.0 - z, 2.5);
   float ang = atan(uv.y, uv.x);
   vec3 rainbow = 0.5 + 0.5 * cos(ang * 2.0 + vec3(0.0, 2.1, 4.2) + u_time * 0.15);
-  col += fres * (0.38 * rainbow + 0.22);
+  vec3 rim = mix(0.38 * rainbow + vec3(0.22), vec3(0.8, 0.4, 0.12) + 0.08 * rainbow, u_day);
+  col += fres * rim;
 
   // glassy speculars
   float spec = pow(max(dot(n, normalize(vec3(-0.5, 0.6, 0.7))), 0.0), 42.0);
@@ -108,6 +114,7 @@ void main() {
   const uRes = gl.getUniformLocation(prog, 'u_res');
   const uTime = gl.getUniformLocation(prog, 'u_time');
   const uYaw = gl.getUniformLocation(prog, 'u_yaw');
+  const uDay = gl.getUniformLocation(prog, 'u_day');
 
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -118,7 +125,9 @@ void main() {
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const AUTO_SPEED = reduced ? 0 : 0.12; // rad/s
+  const dayTarget = () => (document.documentElement.dataset.theme === 'dark' ? 0 : 1);
   let yaw = 0, vel = 0, dragging = false, lastX = 0, last = performance.now();
+  let day = dayTarget();
 
   wrap.addEventListener('pointerdown', e => {
     dragging = true;
@@ -159,11 +168,14 @@ void main() {
       vel *= 0.94;                       // inertia decay
       yaw += vel + AUTO_SPEED * dt;      // settle back to slow auto-spin
     }
+    // ease toward the current theme (~0.6s day/night crossfade)
+    day += (dayTarget() - day) * Math.min(1, dt * 5);
     resize();
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, reduced ? 0 : now / 1000);
     gl.uniform1f(uYaw, yaw);
+    gl.uniform1f(uDay, day);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 

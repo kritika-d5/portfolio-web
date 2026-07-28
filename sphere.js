@@ -125,9 +125,7 @@ void main() {
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const AUTO_SPEED = reduced ? 0 : 0.12; // rad/s
-  const dayTarget = () => (document.documentElement.dataset.theme === 'dark' ? 0 : 1);
   let yaw = 0, vel = 0, dragging = false, lastX = 0, last = performance.now();
-  let day = dayTarget();
 
   wrap.addEventListener('pointerdown', e => {
     dragging = true;
@@ -161,21 +159,19 @@ void main() {
   }
 
   function draw(now) {
-    if (wrap.offsetParent === null) return; // hidden (light mode)
+    if (wrap.offsetParent === null) return; // hidden
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     if (!dragging) {
       vel *= 0.94;                       // inertia decay
       yaw += vel + AUTO_SPEED * dt;      // settle back to slow auto-spin
     }
-    // ease toward the current theme (~0.6s day/night crossfade)
-    day += (dayTarget() - day) * Math.min(1, dt * 5);
     resize();
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform1f(uTime, reduced ? 0 : now / 1000);
     gl.uniform1f(uYaw, yaw);
-    gl.uniform1f(uDay, day);
+    gl.uniform1f(uDay, 0); // night mode only
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 

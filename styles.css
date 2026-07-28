@@ -230,8 +230,7 @@ body::before {
 :root[data-theme="dark"] .hero-links a,
 :root[data-theme="dark"] .tab,
 :root[data-theme="dark"] .chip,
-:root[data-theme="dark"] .tags li,
-:root[data-theme="dark"] #theme-toggle {
+:root[data-theme="dark"] .tags li {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   -webkit-backdrop-filter: blur(10px);
@@ -272,24 +271,6 @@ body::before {
 
 .site-header nav a { text-decoration: none; color: var(--muted); }
 .site-header nav a:hover { color: var(--accent); }
-
-#theme-toggle {
-  background: none;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  color: var(--muted);
-  transition: color 0.2s, border-color 0.2s;
-}
-#theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
-
-.icon-moon { display: none; }
-:root[data-theme="dark"] .icon-moon { display: block; }
-:root[data-theme="dark"] .icon-sun { display: none; }
 
 /* ---------- hero ---------- */
 

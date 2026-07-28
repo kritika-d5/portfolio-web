@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=4" />
-  <script src="sphere.js?v=3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=5" />
+  <script src="sphere.js?v=4" defer></script>
   <link rel="icon" type="image/png" href="/sakura.png">
 </head>
 <body>
@@ -32,14 +32,14 @@
       <p class="kicker">Mumbai, India</p>
       <h1>Kritika <em>Dubey</em></h1>
       <p class="lede">
-        Final-year Computer Engineering student eager to learn, build,
-        and grow. Currently exploring machine learning, AI, and 
+        final-year computer engineering student eager to learn, build,
+        and grow. currently exploring machine learning, ai, and
         backend development.
       </p>
       <div class="hero-links">
-        <a href="https://github.com/kritika-d5" target="_blank" rel="noopener">GitHub ↗</a>
-        <a href="https://linkedin.com/in/kritika-dubey" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a href="mailto:kritikadubey2005@gmail.com">Email ↗</a>
+        <a href="https://github.com/kritika-d5" target="_blank" rel="noopener">github ↗</a>
+        <a href="https://linkedin.com/in/kritika-dubey" target="_blank" rel="noopener">linkedin ↗</a>
+        <a href="mailto:kritikadubey2005@gmail.com">email ↗</a>
       </div>
     </section>
 
@@ -161,6 +161,38 @@
 
       <article class="project">
         <header>
+          <h3>Archipelago</h3>
+          <div class="project-links">
+            <span class="live-wrap"><a href="https://archipelago-vercel.vercel.app/" target="_blank" rel="noopener">live ↗</a><span class="popup" aria-hidden="true"><span class="popup-bar"><i></i><i></i><i></i><em>archipelago-vercel.vercel.app</em></span><span class="popup-frame"><iframe data-src="https://archipelago-vercel.vercel.app/" tabindex="-1" title="" loading="lazy"></iframe></span></span></span>
+            <a href="https://github.com/kritika-d5/archipelago" target="_blank" rel="noopener">code ↗</a>
+          </div>
+        </header>
+        <p>
+          Turns multi-repo GitHub organizations into a living knowledge graph.
+          A static-analysis pipeline (Python <code>ast</code>) compiles a DAG of
+          microservice dependencies with NetworkX, surfaced through an
+          Architecture Hub with live docs and what-if change-impact analysis.
+        </p>
+        <ul class="tags"><li>React</li><li>FastAPI</li><li>MongoDB</li><li>NetworkX</li><li>Groq / Llama-3.3</li></ul>
+      </article>
+
+      <article class="project">
+        <header>
+          <h3>Waypoint Extension</h3>
+          <div class="project-links">
+            <a href="https://github.com/kritika-d5/Waypoint-Extension" target="_blank" rel="noopener">code ↗</a>
+          </div>
+        </header>
+        <p>
+          An AI-powered Chrome extension that guides users through any website step
+          by step. It grounds LLM responses in the live DOM, highlighting the exact
+          elements to interact without relying on vision models.
+        </p>
+        <ul class="tags"><li>Chrome Extension</li><li>Manifest V3</li><li>JavaScript</li><li>LLM</li></ul>
+      </article>
+
+      <article class="project">
+        <header>
           <h3>Collab Editor</h3>
           <div class="project-links">
             <span class="live-wrap"><a href="https://collab-editor-frontend-six.vercel.app/" target="_blank" rel="noopener">live ↗</a><span class="popup" aria-hidden="true"><span class="popup-bar"><i></i><i></i><i></i><em>collab-editor-frontend-six.vercel.app</em></span><span class="popup-frame"><iframe data-src="https://collab-editor-frontend-six.vercel.app/" tabindex="-1" title="" loading="lazy"></iframe></span></span></span>
@@ -175,41 +207,6 @@
         </p>
         <ul class="tags"><li>TypeScript</li><li>Yjs CRDT</li><li>Socket.io</li><li>Redis</li><li>PostgreSQL</li></ul>
       </article>
-      <article class="project">
-  <header>
-    <h3>Waypoint Extension</h3>
-    <div class="project-links">
-      <a href="https://github.com/kritika-d5/Waypoint-Extension" target="_blank" rel="noopener">code ↗</a>
-    </div>
-  </header>
-  <p>
-    An AI-powered Chrome extension that guides users through any website step
-    by step. It grounds LLM responses in the live DOM, highlighting the exact
-    elements to interact without relying on vision models.
-  </p>
-     <ul class="tags">
-       <li>Chrome Extension</li>
-       <li>Manifest V3</li>
-       <li>JavaScript</li>
-       <li>LLM</li>
-     </ul>
-    </article>
-      <article class="project">
-        <header>
-          <h3>Athenaeum</h3>
-          <div class="project-links">
-            <span class="live-wrap"><a href="https://athenaeum-13.vercel.app" target="_blank" rel="noopener">live ↗</a><span class="popup" aria-hidden="true"><span class="popup-bar"><i></i><i></i><i></i><em>athenaeum-13.vercel.app</em></span><span class="popup-frame"><iframe data-src="https://athenaeum-13.vercel.app" tabindex="-1" title="" loading="lazy"></iframe></span></span></span>
-            <a href="https://github.com/kritika-d5/Athenaeum" target="_blank" rel="noopener">code ↗</a>
-          </div>
-        </header>
-        <p>
-          A dark-academia book tracker: shelve books, write reviews, and join
-          reader circles. Built with Django and an unreasonable amount of
-          attention to typography.
-        </p>
-        <ul class="tags"><li>Django</li><li>Python</li><li>CSS</li></ul>
-      </article>
-
 
       <article class="project">
         <header>
@@ -229,19 +226,18 @@
 
       <article class="project">
         <header>
-          <h3>Archipelago</h3>
+          <h3>Athenaeum</h3>
           <div class="project-links">
-            <span class="live-wrap"><a href="https://archipelago-vercel.vercel.app/" target="_blank" rel="noopener">live ↗</a><span class="popup" aria-hidden="true"><span class="popup-bar"><i></i><i></i><i></i><em>archipelago-vercel.vercel.app</em></span><span class="popup-frame"><iframe data-src="https://archipelago-vercel.vercel.app/" tabindex="-1" title="" loading="lazy"></iframe></span></span></span>
-            <a href="https://github.com/kritika-d5/archipelago" target="_blank" rel="noopener">code ↗</a>
+            <span class="live-wrap"><a href="https://athenaeum-13.vercel.app" target="_blank" rel="noopener">live ↗</a><span class="popup" aria-hidden="true"><span class="popup-bar"><i></i><i></i><i></i><em>athenaeum-13.vercel.app</em></span><span class="popup-frame"><iframe data-src="https://athenaeum-13.vercel.app" tabindex="-1" title="" loading="lazy"></iframe></span></span></span>
+            <a href="https://github.com/kritika-d5/Athenaeum" target="_blank" rel="noopener">code ↗</a>
           </div>
         </header>
         <p>
-          Turns multi-repo GitHub organizations into a living knowledge graph.
-          A static-analysis pipeline (Python <code>ast</code>) compiles a DAG of
-          microservice dependencies with NetworkX, surfaced through an
-          Architecture Hub with live docs and what-if change-impact analysis.
+          A dark-academia book tracker: shelve books, write reviews, and join
+          reader circles. Built with Django and an unreasonable amount of
+          attention to typography.
         </p>
-        <ul class="tags"><li>React</li><li>FastAPI</li><li>MongoDB</li><li>NetworkX</li><li>Groq / Llama-3.3</li></ul>
+        <ul class="tags"><li>Django</li><li>Python</li><li>CSS</li></ul>
       </article>
     </section>
 

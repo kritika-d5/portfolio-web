@@ -109,12 +109,16 @@ void main() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const mobile = vw <= 700;
+    // mobile: oversized on purpose — 115% of the screen width, so the disk bleeds
+    // off both side edges and only the top/bottom rim arcs frame the hero text
+    const canvasH = canvas.clientHeight || vh * 1.4;
+    const scale = mobile ? (vw * 1.15) / (0.62 * canvasH) : BASE_SCALE;
     const baseX = mobile ? 0 : vw * 0.24; // centered behind the hero on small screens
-    const baseY = vh * 0.08;
+    const baseY = mobile ? vh * 0.17 : vh * 0.08;
     const maxOpacity = mobile ? 0.55 : 1; // dimmed where text overlaps it
     const t = Math.min(Math.max(y / (vh * 0.85), 0), 1);
     canvas.style.opacity = String(maxOpacity * (1 - t * 0.9));
-    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${BASE_SCALE * (1 - t * 0.3)})`;
+    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${scale * (1 - t * 0.3)})`;
     scrollYaw = y * 0.00035;
   }
   window.addEventListener('scroll', applyScrollTransform, { passive: true });

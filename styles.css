@@ -50,13 +50,16 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
-html, body { overflow-x: hidden; }
+/* clip at the viewport only — body must not clip, the hero column
+   intentionally extends 60px past it on wide screens */
+html { overflow-x: hidden; }
 
 body {
   background:
     radial-gradient(640px 420px at 82% -8%, rgba(244, 147, 106, 0.18), transparent 65%),
     radial-gradient(560px 400px at 8% 108%, rgba(226, 184, 63, 0.2), transparent 65%),
     var(--bg);
+  position: relative; /* anchors .constellations to full document height */
   color: var(--ink);
   font-family: var(--sans);
   font-size: 1rem;
@@ -133,89 +136,70 @@ body::before {
     340px 340px, 340px 340px;
 }
 
-/* glass sphere (hero, both themes — night nebula / day glass) */
-.sphere canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-/* WebGL active: shader replaces the CSS-gradient look — no outer glow,
-   so nothing betrays the canvas bounds */
-.sphere.gl {
-  background: none;
-  box-shadow: none;
-  pointer-events: auto;
-  cursor: grab;
-  touch-action: pan-y;
-}
-.sphere.gl::before,
-.sphere.gl::after { content: none; }
-.sphere.grabbing { cursor: grabbing; }
-
+/* fullscreen ethereal nebula planet (drawn by sphere.js shader) */
 .sphere {
   display: block;
-  position: absolute;
+  position: fixed;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
   pointer-events: none;
+  z-index: -2;
+  filter: blur(0.5px) saturate(1.08);
+  /* opacity/transform are now set from sphere.js on scroll */
+}
+.sphere canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sphere.gl { background: none; box-shadow: none; }
+.sphere.gl::before, .sphere.gl::after { content: none; }
+
+/* thin constellations scattered down the whole page (scroll with content) */
+.constellations {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
   z-index: -1;
-  top: 2.4rem;
-  right: 0.5rem;
-  width: 160px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 22%),
-    radial-gradient(circle at 68% 72%, rgba(255, 185, 140, 0.6), transparent 46%),
-    radial-gradient(circle at 42% 58%, rgba(255, 205, 150, 0.65), transparent 58%),
-    radial-gradient(circle at 50% 45%, rgba(250, 226, 172, 0.95), rgba(240, 196, 132, 0.95) 72%);
-  box-shadow:
-    inset 0 -14px 32px rgba(226, 150, 90, 0.3),
-    inset 10px 8px 24px rgba(255, 255, 255, 0.35),
-    0 24px 70px rgba(226, 150, 90, 0.25);
+  pointer-events: none;
+  overflow: hidden;
 }
-
-:root[data-theme="dark"] .sphere {
-  background:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 20%),
-    radial-gradient(circle at 68% 72%, rgba(255, 143, 210, 0.55), transparent 46%),
-    radial-gradient(circle at 42% 58%, rgba(232, 121, 180, 0.6), transparent 58%),
-    radial-gradient(circle at 50% 45%, rgba(90, 36, 80, 0.85), rgba(23, 10, 26, 0.9) 72%);
-  box-shadow:
-    inset 0 -14px 32px rgba(255, 158, 199, 0.35),
-    inset 10px 8px 24px rgba(255, 255, 255, 0.14),
-    inset -6px -4px 18px rgba(255, 158, 199, 0.18),
-    0 24px 70px rgba(214, 84, 160, 0.28);
-}
-
-/* prismatic rim + floor glow */
-:root[data-theme="dark"] .sphere::before {
-  content: "";
+.constellations svg {
   position: absolute;
-  inset: -1px;
-  border-radius: 50%;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 158, 199, 0.2) 35%, transparent 55%, rgba(143, 208, 255, 0.35));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  overflow: visible;
+}
+.constellations polyline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.constellations circle { fill: rgba(255, 255, 255, 0.4); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .constellations circle {
+    animation: twinkle var(--t, 7s) ease-in-out var(--d, 0s) infinite;
+  }
+  .constellations circle:nth-of-type(2n) {
+    animation-delay: calc(var(--d, 0s) + 1.6s);
+  }
+  .constellations circle:nth-of-type(3n) {
+    animation-delay: calc(var(--d, 0s) + 3.1s);
+  }
 }
 
-.sphere::after {
+/* fixed dark vignette so body text stays legible over the glow */
+body::after {
   content: "";
-  position: absolute;
-  left: 12%;
-  bottom: -18%;
-  width: 76%;
-  height: 14%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(240, 170, 90, 0.3), transparent 70%);
-  filter: blur(4px);
-}
-
-:root[data-theme="dark"] .sphere::after {
-  background: radial-gradient(ellipse at center, rgba(255, 130, 200, 0.32), transparent 70%);
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 480px at 50% 20%, rgba(11,9,24,0.3), transparent 62%),
+    radial-gradient(820px 620px at 50% 92%, rgba(11,9,24,0.3), transparent 62%),
+    linear-gradient(rgba(11,9,24,0.08), transparent 25%, rgba(11,9,24,0.18));
 }
 
 /* prismatic name */
@@ -279,6 +263,13 @@ body::before {
   padding: 4.5rem 0 5rem;
 }
 
+/* hero text sits left of the planet (margin, not transform — a transform
+   would become the containing block for the fixed fullscreen sphere) */
+@media (min-width: 700px) {
+  /* shift up to 100px left, but never past the viewport edge */
+  .hero { margin-left: calc(-1 * clamp(0px, (100vw - 44rem) / 2, 100px)); }
+}
+
 .kicker {
   font-family: var(--mono);
   font-size: 0.75rem;
@@ -302,7 +293,7 @@ body::before {
 .lede {
   font-size: 1.08rem;
   color: var(--muted);
-  max-width: 36rem;
+  max-width: 28rem; /* wraps clear of the planet on the right */
 }
 
 .lede em { color: var(--ink); }
@@ -662,10 +653,6 @@ section { padding: 3rem 0; border-top: 1px solid var(--rule); }
   .lede { animation-delay: 0.16s; }
   .hero-links { animation-delay: 0.24s; }
 
-  .sphere {
-    animation: fade-up 0.9s ease 0.3s backwards, bob 6s ease-in-out 1.4s infinite;
-  }
-
   /* scroll reveal (class added by JS) */
   .reveal {
     opacity: 0;
@@ -705,8 +692,6 @@ section { padding: 3rem 0; border-top: 1px solid var(--rule); }
 
 @media (max-width: 620px) {
   .hero { padding: 3rem 0 3.5rem; }
-
-  .sphere { width: 84px; top: 0; right: 0; opacity: 0.9; }
 
   .section-head { flex-wrap: wrap; row-gap: 0.9rem; }
 

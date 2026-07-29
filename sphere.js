@@ -57,6 +57,10 @@ void main() {
   float edgeFeather = smoothstep(1.55, 0.5, r);
   float haze = dens * 0.35 * smoothstep(1.9, 0.85, r);
   float a = clamp((0.22 + 0.5 * fres * step(r,1.05) + dens * 0.55 + glow * 0.8 + spec) * edgeFeather + haze, 0.0, 0.85);
+  vec2 f = gl_FragCoord.xy / u_res;
+  float border = smoothstep(0.0, 0.1, f.x) * smoothstep(1.0, 0.9, f.x)
+               * smoothstep(0.0, 0.1, f.y) * smoothstep(1.0, 0.9, f.y);
+  a *= border;
   gl_FragColor = vec4(col * a, a);
 }`;
 
@@ -105,16 +109,12 @@ void main() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const mobile = vw <= 700;
-    // shader draws the planet at 0.62 × canvas height; in portrait that reads as a
-    // wall of glow, so on mobile pick the scale from the viewport width instead
-    const canvasH = canvas.clientHeight || vh * 1.4;
-    const scale = mobile ? (vw * 0.85) / (0.62 * canvasH) : BASE_SCALE;
     const baseX = mobile ? 0 : vw * 0.24; // centered behind the hero on small screens
-    const baseY = mobile ? -vh * 0.1 : vh * 0.08; // sits up behind the name on mobile
+    const baseY = vh * 0.08;
     const maxOpacity = mobile ? 0.55 : 1; // dimmed where text overlaps it
     const t = Math.min(Math.max(y / (vh * 0.85), 0), 1);
     canvas.style.opacity = String(maxOpacity * (1 - t * 0.9));
-    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${scale * (1 - t * 0.3)})`;
+    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${BASE_SCALE * (1 - t * 0.3)})`;
     scrollYaw = y * 0.00035;
   }
   window.addEventListener('scroll', applyScrollTransform, { passive: true });

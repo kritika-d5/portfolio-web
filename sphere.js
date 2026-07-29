@@ -104,12 +104,17 @@ void main() {
     const y = window.scrollY;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const baseX = vw > 700 ? vw * 0.24 : 0; // centered on small screens
-    const baseY = vh * 0.08;
-    const maxOpacity = vw > 700 ? 1 : 0.55; // dimmed on small screens — planet sits behind the text there
+    const mobile = vw <= 700;
+    // shader draws the planet at 0.62 × canvas height; in portrait that reads as a
+    // wall of glow, so on mobile pick the scale from the viewport width instead
+    const canvasH = canvas.clientHeight || vh * 1.4;
+    const scale = mobile ? (vw * 0.85) / (0.62 * canvasH) : BASE_SCALE;
+    const baseX = mobile ? 0 : vw * 0.24; // centered behind the hero on small screens
+    const baseY = mobile ? -vh * 0.1 : vh * 0.08; // sits up behind the name on mobile
+    const maxOpacity = mobile ? 0.55 : 1; // dimmed where text overlaps it
     const t = Math.min(Math.max(y / (vh * 0.85), 0), 1);
     canvas.style.opacity = String(maxOpacity * (1 - t * 0.9));
-    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${BASE_SCALE * (1 - t * 0.3)})`;
+    canvas.style.transform = `translate(${baseX}px, ${baseY + y * 0.06}px) scale(${scale * (1 - t * 0.3)})`;
     scrollYaw = y * 0.00035;
   }
   window.addEventListener('scroll', applyScrollTransform, { passive: true });
